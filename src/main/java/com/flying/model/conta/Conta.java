@@ -4,7 +4,7 @@ public class Conta {
 
     private double saldo;
     private String tipoConta;
-    private String instiuicaoFinanceira;
+    private String instituicaoFinanceira;
 
     public double getSaldo() {
         return saldo;
@@ -20,10 +20,10 @@ public class Conta {
         this.tipoConta = tipoConta;
     }
 
-    public String getInstiuicaoFinanceira() {
-        return instiuicaoFinanceira;
+    public String getInstituicaoFinanceira() {
+        return instituicaoFinanceira;
     }
-    public void setInstiuicaoFinanceira(String instiuicaoFinanceira) {
-        this.instiuicaoFinanceira = instiuicaoFinanceira;
+    public void setInstituicaoFinanceira(String instituicaoFinanceira) {
+        this.instituicaoFinanceira = instituicaoFinanceira;
     }
 }
