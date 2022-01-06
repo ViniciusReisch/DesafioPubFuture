@@ -1,7 +1,7 @@
 package com.flying.model.conta;
 
 public class Conta {
-
+    
     private double saldo;
     private String tipoConta;
     private String instituicaoFinanceira;
