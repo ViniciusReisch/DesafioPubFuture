@@ -3,10 +3,11 @@ package com.flying.controller.despesa;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flying.model.despesa.Despesa;
+import com.flying.model.Despesa;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,12 +24,12 @@ public class DespesaController {
     }
     
     @PutMapping("/expense/edit/{id}")
-    public void updateExpense(@RequestBody Despesa despesa) {
+    public void updateExpense(@RequestBody Despesa despesa, @PathVariable(value="id") String id) {
         // TODO: use database to update expenses with id.
     }
 
     @DeleteMapping("/expense/delete/{id}")
-    public void deleteExpense() {
+    public void deleteExpense(@PathVariable(value="id") String id) {
         // TODO: use database to delete expenses with id.
     }
 
@@ -39,7 +40,7 @@ public class DespesaController {
     }
 
     @GetMapping("/expense/total-expenses/{id}")
-    public double getTotalExpenses() {
+    public double getTotalExpenses(@PathVariable(value="id") String id) {
         double totalExpenses = 0;
 
         for (Despesa despesa : expenses) {

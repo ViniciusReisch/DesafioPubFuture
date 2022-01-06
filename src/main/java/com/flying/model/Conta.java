@@ -1,4 +1,4 @@
-package com.flying.model.conta;
+package com.flying.model;
 
 public class Conta {
     

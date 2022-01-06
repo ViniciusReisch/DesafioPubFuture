@@ -3,10 +3,11 @@ package com.flying.controller.conta;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flying.model.conta.Conta;
+import com.flying.model.Conta;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,12 +24,12 @@ public class ContaController {
     }
     
     @PutMapping("/account/edit/{id}")
-    public void updateAccount(@RequestBody Conta conta) {
+    public void updateAccount(@RequestBody Conta conta, @PathVariable(value="id") String id) {
         // TODO: use database to update accounts with id.
     }
 
     @DeleteMapping("/account/delete/{id}")
-    public void deleteAccount() {
+    public void deleteAccount(@PathVariable(value="id") String id) {
         // TODO: use database to delete accounts with id.
     }
 
@@ -37,13 +38,15 @@ public class ContaController {
         return accounts;
     }
 
-    @PostMapping
-    public void makeTransaction(@RequestBody String idContaEmissor, String idContaReceptor, double quantidadeTransferir) {
+    @PostMapping("/transaction/{idContaEmissor}/{idContaReceptor}")
+    public void makeTransaction(@PathVariable(value="idContaEmissor") String idContaEmissor,
+     @PathVariable(value="idContaReceptor") String idContaReceptor,
+     double quantidadeTransferir) {
         // TODO: use database to make transactions between accounts and add validations.
     }
 
     @GetMapping("/account/total-balance/{id}")
-    public void getAccountBalance() {
+    public void getAccountBalance(@PathVariable(value="id") String id) {
         // TODO: use database to get total balance
     }
 }

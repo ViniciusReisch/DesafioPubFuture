@@ -1,6 +1,4 @@
-package com.flying.model.despesa;
-
-import com.flying.model.conta.Conta;
+package com.flying.model;
 
 public class Despesa {
     

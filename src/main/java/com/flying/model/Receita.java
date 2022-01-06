@@ -1,6 +1,4 @@
-package com.flying.model.receita;
-
-import com.flying.model.conta.Conta;
+package com.flying.model;
 
 public class Receita {
     private double valor;
