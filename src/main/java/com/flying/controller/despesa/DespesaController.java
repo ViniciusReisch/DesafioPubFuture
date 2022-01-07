@@ -1,49 +1,69 @@
 package com.flying.controller.despesa;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.flying.model.Despesa;
+import com.flying.repository.DespesaRepository;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping({"/expenses"})
 public class DespesaController {
 
-    public List<Despesa> expenses = new ArrayList<Despesa>();
+    private DespesaRepository repository;
 
-    @PostMapping("/expense/create")
-    public void createExpense(@RequestBody Despesa despesa) {
-        expenses.add(despesa);
+    public DespesaController(DespesaRepository repository) {
+        this.repository = repository;
+    }
+
+    @PostMapping("/create")
+    public void create(@RequestBody Despesa despesa) {
+        repository.save(despesa);
     }
     
-    @PutMapping("/expense/edit/{id}")
-    public void updateExpense(@RequestBody Despesa despesa, @PathVariable(value="id") String id) {
-        // TODO: use database to update expenses with id.
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Despesa> update(@RequestBody Despesa novaDespesa, @PathVariable(value="id") Long id) {
+        return repository.findById(id).map(despesa -> {
+            despesa.setConta(novaDespesa.getConta());
+            despesa.setValor(novaDespesa.getValor());
+            despesa.setDataPagamento(novaDespesa.getDataPagamento());
+            despesa.setDataPagamentoEsperado(novaDespesa.getDataPagamentoEsperado());
+            despesa.setTipoDespesa(novaDespesa.getTipoDespesa());
+            
+            Despesa despesaAtualizada = repository.save(despesa);
+            return  ResponseEntity.ok().body(despesaAtualizada);
+
+        }).orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/expense/delete/{id}")
-    public void deleteExpense(@PathVariable(value="id") String id) {
-        // TODO: use database to delete expenses with id.
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable(value="id") Long id) {
+        return repository.findById(id).map(despesa -> {
+            repository.deleteById(id);
+
+            return ResponseEntity.ok().build();
+        }).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/expenses/all")
+    @GetMapping("/all")
     public List<Despesa> getAllExpenses() {
-        // TODO: add filter
-        return expenses;
+        return repository.findAll();
     }
 
-    @GetMapping("/expense/total-expenses/{id}")
+    @GetMapping("/total-expenses/{id}")
     public double getTotalExpenses(@PathVariable(value="id") String id) {
         double totalExpenses = 0;
 
-        for (Despesa despesa : expenses) {
+        for (Despesa despesa : repository.findAll()) {
             totalExpenses += despesa.getValor();
         }
 
