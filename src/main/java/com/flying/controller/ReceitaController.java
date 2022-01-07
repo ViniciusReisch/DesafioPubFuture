@@ -1,10 +1,11 @@
-package com.flying.controller.receita;
+package com.flying.controller;
 
 import java.util.List;
 
 import com.flying.model.Receita;
 import com.flying.repository.ReceitaRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping({"/revenues"})
 public class ReceitaController {
-
+    
+    @Autowired
     private ReceitaRepository repository;
 
     public ReceitaController(ReceitaRepository repository) {

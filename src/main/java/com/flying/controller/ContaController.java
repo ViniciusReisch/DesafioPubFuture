@@ -1,10 +1,11 @@
-package com.flying.controller.conta;
+package com.flying.controller;
 
 import java.util.List;
 
 import com.flying.model.Conta;
 import com.flying.repository.ContaRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping({"/accounts"})
 public class ContaController {
 
+    @Autowired
     private ContaRepository repository;
 
     public ContaController(ContaRepository contaRepository) {
