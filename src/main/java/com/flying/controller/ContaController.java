@@ -1,7 +1,5 @@
 package com.flying.controller;
 
-import java.util.List;
-
 import com.flying.model.Conta;
 import com.flying.repository.ContaRepository;
 
@@ -21,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContaController {
 
     @Autowired
-    private ContaRepository repository;
+    private ContaRepository repository; 
 
     public ContaController(ContaRepository contaRepository) {
         this.repository = contaRepository;
     }
+
+    public ContaController() {}
 
     @PostMapping("/create")
     public void create(@RequestBody Conta conta) {
@@ -55,7 +55,7 @@ public class ContaController {
     }
 
     @GetMapping("/all")
-    public List<Conta> getAllAccounts() {
+    public Iterable<Conta> getAllAccounts() {
         return repository.findAll();
     }
 
