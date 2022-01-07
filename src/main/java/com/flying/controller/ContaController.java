@@ -2,6 +2,7 @@ package com.flying.controller;
 
 import com.flying.model.Conta;
 import com.flying.repository.ContaRepository;
+import com.flying.validation.ContaValidation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -60,10 +61,18 @@ public class ContaController {
     }
 
     @PostMapping("/transaction/{idContaEmissor}/{idContaReceptor}")
-    public void makeTransaction(@PathVariable(value="idContaEmissor") String idContaEmissor,
-     @PathVariable(value="idContaReceptor") String idContaReceptor,
-     double quantidadeTransferir) {
-        // TODO: use database to make transactions between accounts and add validations.
+    public void makeTransaction(@PathVariable(value="idContaEmissor") Long idContaEmissor,
+     @PathVariable(value="idContaReceptor") Long idContaReceptor,
+     @RequestBody double quantidadeTransferir) {
+         // Pegando saldo atráves do ID da conta emissora.
+        double saldo = repository.getById(idContaEmissor).getSaldo();
+        System.out.print(String.valueOf(saldo));
+
+        if (ContaValidation.isPossibleTransaction(quantidadeTransferir, saldo)) {
+            System.out.print("É possível fazer transferência.");
+        } else {
+            System.out.print("Não é possível fazer transferência.");
+        }
     }
 
     @GetMapping("/total-balance/{id}")
