@@ -6,5 +6,4 @@ public class ContaValidation {
         if(valorASerTransferido > valorAtualDaConta) return false;
         return true;
     }
-
 }

@@ -1,10 +1,13 @@
 package com.flying.controller;
 
+import java.util.Optional;
+
 import com.flying.model.Conta;
 import com.flying.repository.ContaRepository;
 import com.flying.validation.ContaValidation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+class Saldo {
+    double saldo;
+
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+}
 
 @RestController
 @RequestMapping({"/accounts"})
@@ -63,20 +78,33 @@ public class ContaController {
     @PostMapping("/transaction/{idContaEmissor}/{idContaReceptor}")
     public void makeTransaction(@PathVariable(value="idContaEmissor") Long idContaEmissor,
      @PathVariable(value="idContaReceptor") Long idContaReceptor,
-     @RequestBody double quantidadeTransferir) {
-         // Pegando saldo atráves do ID da conta emissora.
-        double saldo = repository.getById(idContaEmissor).getSaldo();
-        System.out.print(String.valueOf(saldo));
+     @RequestBody Saldo saldo) {
+        // Obs.: 'Saldo' está sendo usado como parâmetro para a transação pois usar apenas um double resulta, por algum motivo, um erro de deserialize.
+        // com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize value of type `java.lang.Double` from Object value
+        double valorASerTransferido = saldo.getSaldo();
+        try {
+            Conta contaEmissora = repository.getById(idContaEmissor);
+            Conta contaReceptora = repository.getById(idContaReceptor);
 
-        if (ContaValidation.isPossibleTransaction(quantidadeTransferir, saldo)) {
-            System.out.print("É possível fazer transferência.");
-        } else {
-            System.out.print("Não é possível fazer transferência.");
+            // Caso o valor a ser transferido seja menor ou igual à quantidade de saldo
+            if (ContaValidation.isPossibleTransaction(valorASerTransferido, contaEmissora.getSaldo())) {
+                // ... o valor é adicionado à conta receptora
+                contaReceptora.setSaldo(contaReceptora.getSaldo() + valorASerTransferido);
+                update(contaReceptora, idContaReceptor);
+                // E descontado da conta emissora.
+                contaEmissora.setSaldo(contaEmissora.getSaldo() - valorASerTransferido);
+                update(contaEmissora, idContaEmissor);
+            } else {
+                System.out.println("Não é válido");
+            }
+        } catch (Exception e) {
+            System.out.print("Conta com identificador " + idContaReceptor + " não foi encontrado.");
         }
+
     }
 
     @GetMapping("/total-balance/{id}")
-    public void getAccountBalance(@PathVariable(value="id") String id) {
+    public void getAccountBalance(@PathVariable(value="id") Long id) {
         // TODO: use database to get total balance
     }
 }
