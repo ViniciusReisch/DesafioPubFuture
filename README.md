@@ -34,3 +34,7 @@
 - Body: ``{ "saldo": 10 }``
 
 As rotas e body de despesas e receitas podem ser encontradas nos Controllers e seguem o mesmo padrão das de Conta.
+
+## Vídeo de demonstração
+
+[Vídeo de exemplo demonstrando CRUD de Contas.](https://streamable.com/iv05kv)
