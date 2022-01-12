@@ -17,14 +17,18 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "contas")
 public class Conta {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
     @Column(name = "saldo", nullable = false)
     private double saldo;
+
     @Column(name = "tipo_conta", nullable = false)
     private String tipoConta;
+
     @Column(name = "instituicao_financeira", nullable = false)
     private String instituicaoFinanceira;
 

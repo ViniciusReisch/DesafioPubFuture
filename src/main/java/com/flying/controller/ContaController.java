@@ -1,13 +1,10 @@
 package com.flying.controller;
 
-import java.util.Optional;
-
 import com.flying.model.Conta;
 import com.flying.repository.ContaRepository;
 import com.flying.validation.ContaValidation;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,11 +40,13 @@ public class ContaController {
 
     public ContaController() {}
 
+    /**  Cadastrar uma nova conta */
     @PostMapping("/create")
     public void create(@RequestBody Conta conta) {
         repository.save(conta);
     }
     
+    /** Editar conta */ 
     @PutMapping("/edit/{id}")
     public ResponseEntity<Conta> update(@RequestBody Conta novaConta, @PathVariable(value="id") Long id) {
         return repository.findById(id).map(conta -> {
@@ -56,11 +55,12 @@ public class ContaController {
             conta.setInstituicaoFinanceira(novaConta.getInstituicaoFinanceira());
             
             Conta contaAtualizada = repository.save(conta);
-            return  ResponseEntity.ok().body(contaAtualizada);
+            return ResponseEntity.ok().body(contaAtualizada);
 
         }).orElse(ResponseEntity.notFound().build());
     }
 
+    /** Remover conta */ 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable(value="id") Long id) {
         return repository.findById(id).map(conta -> {
@@ -70,11 +70,13 @@ public class ContaController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
+    /** Listar todas contas */ 
     @GetMapping("/all")
-    public Iterable<Conta> getAllAccounts() {
+    public Iterable<Conta> getAll() {
         return repository.findAll();
     }
 
+    /** Transferir saldo entre contas */ 
     @PostMapping("/transaction/{idContaEmissor}/{idContaReceptor}")
     public void makeTransaction(@PathVariable(value="idContaEmissor") Long idContaEmissor,
      @PathVariable(value="idContaReceptor") Long idContaReceptor,
@@ -95,16 +97,23 @@ public class ContaController {
                 contaEmissora.setSaldo(contaEmissora.getSaldo() - valorASerTransferido);
                 update(contaEmissora, idContaEmissor);
             } else {
-                System.out.println("Não é válido");
+                System.out.println("Valor de transferência não é valida");
             }
         } catch (Exception e) {
             System.out.print("Conta com identificador " + idContaReceptor + " não foi encontrado.");
         }
-
     }
 
+    /** Listar saldo total */ 
     @GetMapping("/total-balance/{id}")
-    public void getAccountBalance(@PathVariable(value="id") Long id) {
-        // TODO: use database to get total balance
+    public double getAccountBalance(@PathVariable(value="id") Long id) {
+        double totalConta = 0;
+        try {
+            Conta conta = repository.getById(id);
+            totalConta = conta.getSaldo();
+        } catch (Exception e) {
+            System.out.print("Conta com identificador " + id + " não foi encontrado.");
+        }
+        return totalConta;
     }
 }
